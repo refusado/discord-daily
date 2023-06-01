@@ -1,8 +1,8 @@
-- name: Send webhook message
+name: Send webhook message
 
 on:
   schedule:
-    - cron: 0 16,21 * * *
+    - cron: '0 16,21 * * *'
 
 jobs:
   webhook:
