@@ -1,10 +1,10 @@
 {
   "name": "discord-daily",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Get daily tips on your discord server",
   "main": "main.js",
   "scripts": {
-    "sendhook": "node send.js"
+    "sendhook": "node src/main.js"
   },
   "keywords": [
     "discord"
