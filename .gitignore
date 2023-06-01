@@ -1,0 +1,6 @@
+node_modules/
+.env
+data.js
+idea.md
+keys.json
+project.md
