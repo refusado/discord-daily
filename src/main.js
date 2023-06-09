@@ -15,7 +15,7 @@ async function sendHooksMessage(message) {
       axios.post(url, {
         "embeds": [
           {
-            "title": ":bulb: Daily tip time!",
+            "title": `:bulb: Daily tip time! ${getCurrentTime()}:00 ` ,
             "description": message + "\n\n[Source](https://github.com/refusado/discord-daily)",
             "color": 16436796
           }
@@ -25,4 +25,14 @@ async function sendHooksMessage(message) {
       console.log(err);
     }
   });
+}
+
+function getCurrentTime() {
+  const hours = [10, 15, 20, 23];
+  const currentHour = new Date().getHours();
+
+  if (!hours.includes(currentHour))
+    return currentHour + 1;
+
+  return currentHour;
 }
