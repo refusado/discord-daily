@@ -4,30 +4,38 @@ import tips from './tips.js';
 
 config();
 
-const tipNo = Math.floor(Math.random() * tips.length);
-await sendHooksMessage(tips[tipNo]);
-
-async function sendHooksMessage(message) {
-  const urlArray = JSON.parse(process.env.WEBHOOK_URLS).urls;
-
-  urlArray.forEach(url => {
-    try {
-      axios.post(url, {
-        "embeds": [
-          {
-            "title": `:bulb: Daily tip time! ${getCurrentTime()}:00 ` ,
-            "description": message + "\n\n[Source](https://github.com/refusado/discord-daily)",
-            "color": 16436796
-          }
-        ]
-      });
-    } catch (err) {
-      console.log(err);
+const hour = getCurrentHour();
+const message = getMessage();
+const urls = JSON.parse(process.env.WEBHOOK_URLS).urls;
+const body = {
+  "embeds": [
+    {
+      "title": `\`${hour}\`:bulb: Daily tip time!` ,
+      "description": message + "\n\n[Source](https://github.com/refusado/discord-daily)",
+      "color": 16436796
     }
-  });
+  ]
 }
 
-function getCurrentTime() {
+const requests = urls.map(url => axios.post(url, body));
+
+try {
+  const responses = await Promise.all(requests);
+  responses.forEach((res, i) => {
+    console.log(`Message sent for ${urls[i]}. Status: ${res.status}`);
+  });
+} catch (err) {
+  console.log(err.message);
+}
+
+
+
+function getMessage() {
+  const randomId = Math.floor(Math.random() * tips.length);
+  return tips[randomId];
+}
+
+function getCurrentHour() {
   const hours = [10, 15, 20, 23];
   const currentHour = new Date().getHours();
 
