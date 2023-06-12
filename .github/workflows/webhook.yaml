@@ -2,7 +2,7 @@ name: Send webhook message
 
 on:
   schedule:
-    - cron: '57 9,14,19,22 * * *'
+    - cron: '56 9,14,19,22 * * *'
 
 jobs:
   webhook:
