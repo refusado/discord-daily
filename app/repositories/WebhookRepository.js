@@ -11,7 +11,17 @@ class WebhookRepository {
     });
   }
 
-  async find(id) {
+  async find(url) {
+    return new Promise(resolve => {
+      const urlToFind = url;
+      const content = webhooks.find(({ url }) => url == urlToFind);
+      const size = 1;
+
+      resolve({ size, content });
+    });
+  }
+
+  async findById(id) {
     return new Promise(resolve => {
       const idToFind = id;
       const content = webhooks.find(({ id }) => id == idToFind);
@@ -21,15 +31,13 @@ class WebhookRepository {
     });
   }
 
-  async save(url) {
+  async save(data) {
     try {
-      await insertWebhook({
-        id: webhooks.length,
-        content: url
-      });
-
-      const content = url;
+      const id = webhooks.length
+      const content = { id, ...data };
       const size = 1;
+
+      await insertWebhook(content);
   
       return { size, content };
     } catch (error) {
