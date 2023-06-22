@@ -1,46 +1,61 @@
 import { writeFile } from 'fs';
-import { webhooks } from "../../data/webhooks.example.js";
+import { webhooks } from '../../data/webhooks.example.js';
 
-export default class WebhookRepository {
+class WebhookRepository {
   async getAll() {
-    const content = webhooks;
-    const size = webhooks.length;
+    return new Promise(resolve => {
+      const content = webhooks;
+      const size = webhooks.length;
 
-    return { size, content };
+      resolve({ size, content });
+    });
   }
 
   async find(id) {
-    const idToFind = id;
-    const content = webhooks.find(({ id }) => id == idToFind);
-    const size = 1;
+    return new Promise(resolve => {
+      const idToFind = id;
+      const content = webhooks.find(({ id }) => id == idToFind);
+      const size = 1;
 
-    return { size, content };
+      resolve({ size, content });
+    });
   }
 
   async save(url) {
-    await insertWebhook({
-      id: webhooks.length,
-      content: url
-    });
+    try {
+      await insertWebhook({
+        id: webhooks.length,
+        content: url
+      });
 
-    const content = url;
-    const size = 1;
-
-    return { size, content };
+      const content = url;
+      const size = 1;
+  
+      return { size, content };
+    } catch (error) {
+      console.error('Error while saving webhook:', error);
+      throw new Error('Failed to save webhook.');
+    }
   }
 }
 
-async function insertWebhook({ id, content }) {
-  const dataDir = 'data/webhooks.example.js';
+async function insertWebhook(newWebhook) {
+  const filePath = 'data/webhooks.example.js';
 
-  const updatedWebhooks = webhooks;
-  updatedWebhooks.push({ id, content });
-
+  const updatedWebhooks = [...webhooks, newWebhook];
   const webhooksString = JSON.stringify(updatedWebhooks, null, 2);
-  const file = `export const webhooks = ${webhooksString};`;
 
-  writeFile(dataDir, file, 'utf8', (err) => {
-    if (!err)
-      console.log(`New webhook inserted. Directory: ${dataDir}`);
+  const fileContent = `export const webhooks = ${webhooksString};`;
+
+  return new Promise((resolve, reject) => {
+    writeFile(filePath, fileContent, 'utf8', (error) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(`New webhook inserted. Directory: ${filePath}`);
+      }
+    });
   });
 }
+
+export default new WebhookRepository();
