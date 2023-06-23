@@ -1,26 +1,19 @@
 import WebhookRepository from '../repositories/WebhookRepository.js';
 
-class RegisterWebhook {
-  #testUrl(url) {
-    const regex = /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i;
-    
-    return regex.test(url);
-  }
-
-  constructor(content) {
+export default class RegisterWebhook {
+  async execute(content) {
     let url;
+    if (typeof content == 'string') url = content;
+    if (typeof content == 'object') url = content.url;
+    if (!url) throw new Error('Invalid content format. Pass a string or an object with a "url" property.');
+    if (!isWebhookValid(url)) throw new Error('Invalid webhook URL.');
 
-    if (typeof content == 'string') {
-      url = content;
-    } else if (typeof content == 'object') {
-      url = content.url;
-    }
-
-    if (url) {
-      WebhookRepository.save({ url });
-      return;
-    } else {
-      throw new Error('Invalid format.');
-    }
+    const saved = await WebhookRepository.save({ url });
+    return saved;
   }
+}
+
+function isWebhookValid(webhook) {
+  const regex = /https?:\/\/(?:ptb\.|canary\.)?discord\.com\/api(?:\/v\d{1,2})?\/webhooks\/(\d{17,19})\/([\w-]{68})/i;
+  return regex.test(webhook);
 }
