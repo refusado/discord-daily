@@ -2,6 +2,24 @@ import { writeFile } from 'fs';
 import { webhooks } from '../../data/webhooks.example.js';
 
 class WebhookRepository {
+  async insert(webhookData) {
+    try {
+      return new Promise(async resolve => {
+        const id = webhooks[webhooks.length - 1].id + 1;
+        const content = { id, ...webhookData };
+        const size = 1;
+
+        const updatedWebhooks = [...webhooks, content];
+        await saveData(updatedWebhooks);
+    
+        resolve({ size, content });
+      });
+    } catch (error) {
+      console.error('Error while inserting webhook:', error);
+      throw new Error('Failed to insert webhook.');
+    }
+  }
+
   async getAll() {
     return new Promise(resolve => {
       const content = webhooks;
@@ -14,8 +32,8 @@ class WebhookRepository {
   async find(url) {
     return new Promise(resolve => {
       const urlToFind = url;
-      const content = webhooks.find(({ url }) => url == urlToFind);
-      const size = 1;
+      const content = webhooks.filter(({ url }) => url == urlToFind);
+      const size = content.length;
 
       resolve({ size, content });
     });
@@ -24,35 +42,52 @@ class WebhookRepository {
   async findById(id) {
     return new Promise(resolve => {
       const idToFind = id;
-      const content = webhooks.find(({ id }) => id == idToFind);
-      const size = 1;
+      const content = webhooks.filter(({ id }) => id == idToFind);
+      const size = content.length;
 
       resolve({ size, content });
     });
   }
 
-  async save(data) {
+  async remove(url) {
     try {
-      const id = webhooks.length
-      const content = { id, ...data };
-      const size = 1;
+      return new Promise(async resolve => {
+        const urlToRemove = url;
+        const content = await this.find(urlToRemove);
 
-      await insertWebhook(content);
-  
-      return { size, content };
+        const newData = webhooks.filter(({ url }) => url != urlToRemove);
+        await saveData(newData);
+
+        resolve(content);
+      });
     } catch (error) {
-      console.error('Error while saving webhook:', error);
-      throw new Error('Failed to save webhook.');
+      console.error('Error while removing webhook:', error);
+      throw new Error('Failed to remove webhook.');
+    }
+  }
+
+  async removeById(id) {
+    try {
+      return new Promise(async resolve => {
+        const idToRemove = id;
+        const content = await this.findById(idToRemove);
+
+        const newData = webhooks.filter(({ id }) => id != idToRemove);
+        await saveData(newData);
+
+        resolve(content);
+      });
+    } catch (error) {
+      console.error('Error while removing webhook:', error);
+      throw new Error('Failed to remove webhook.');
     }
   }
 }
 
-async function insertWebhook(newWebhook) {
+async function saveData(webhooksArray) {
   const filePath = 'data/webhooks.example.js';
-
-  const updatedWebhooks = [...webhooks, newWebhook];
-  const webhooksString = JSON.stringify(updatedWebhooks, null, 2);
-
+  
+  const webhooksString = JSON.stringify(webhooksArray, null, 2);
   const fileContent = `export const webhooks = ${webhooksString};`;
 
   return new Promise((resolve, reject) => {
@@ -60,7 +95,7 @@ async function insertWebhook(newWebhook) {
       if (error) {
         reject(error);
       } else {
-        resolve(`New webhook inserted. Directory: ${filePath}`);
+        resolve(`Webhooks data updated. Directory: ${filePath}`);
       }
     });
   });

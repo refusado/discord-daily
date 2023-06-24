@@ -8,7 +8,7 @@ export default class RegisterWebhook {
     if (!url) throw new Error('Invalid content format. Pass a string or an object with a "url" property.');
     if (!isWebhookValid(url)) throw new Error('Invalid webhook URL.');
 
-    const saved = await WebhookRepository.save({ url });
+    const saved = await WebhookRepository.insert({ url });
     return saved;
   }
 }
