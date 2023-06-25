@@ -15,10 +15,10 @@ export default class ReadWebhook {
       if (content.hasOwnProperty('id'))
         return await WebhookRepository.findById(content.id);
 
-      if (content.hasOwnProperty('text'))
-        return await WebhookRepository.find(content.text);
+      if (content.hasOwnProperty('url'))
+        return await WebhookRepository.find(content.url);
     }
 
-    throw new Error('Invalid content format. Pass a string or an object with a "id" or "text" property.');
+    throw new Error('Invalid content format. Pass a string or an object with a "id" or "url" property.');
   }
 }

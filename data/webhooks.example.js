@@ -10,5 +10,9 @@ export const webhooks = [
   {
     "id": 2,
     "url": "https://example.com"
+  },
+  {
+    "id": 3,
+    "url": "https://discord.com/api/webhooks/11111111111111111/oooooooooooooo-ooooooooooooooooooooooooo-ooooooooooooooooooooooooooo"
   }
 ];
