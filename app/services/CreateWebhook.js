@@ -1,15 +1,21 @@
 import WebhookRepository from '../repositories/WebhookRepository.js';
 
-export default class RegisterWebhook {
+export default class CreateWebhook {
   async execute(content) {
+    if (content == null || !content)
+      throw new Error('Invalid content value.');
+    
     let url;
     if (typeof content == 'string') url = content;
     if (typeof content == 'object') url = content.url;
-    if (!url) throw new Error('Invalid content format. Pass a string or an object with a "url" property.');
-    if (!isWebhookValid(url)) throw new Error('Invalid webhook URL.');
 
-    const saved = await WebhookRepository.insert({ url });
-    return saved;
+    if (url == null)
+      throw new Error('Invalid content format. Pass a string or an object with a "url" property.');
+
+    if (!isWebhookValid(url))
+      throw new Error('Invalid webhook URL.');
+
+    return await WebhookRepository.insert({ url });
   }
 }
 
