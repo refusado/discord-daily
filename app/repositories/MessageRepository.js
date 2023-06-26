@@ -6,10 +6,10 @@ class MessageRepository {
     try {
       return new Promise(async resolve => {
         const id = messages[messages.length - 1].id + 1;
-        const content = { id, ...messageData };
-        const size = 1;
+        const content = [{ id, ...messageData }];
+        const size = content.length;
 
-        const updatedMessages = [...messages, content];
+        const updatedMessages = [...messages, ...content];
         await saveData(updatedMessages);
     
         resolve({ size, content });
@@ -78,6 +78,24 @@ class MessageRepository {
     } catch (error) {
       console.error('Error while removing message:', error);
       throw new Error('Failed to remove message.');
+    }
+  }
+
+  async edit(id, messageData) {
+    try {
+      return new Promise(async resolve => {
+        const messageToEdit = (await this.findById(id)).content[0];
+        const index = messages.indexOf(messageToEdit);
+  
+        messages[index] = { id, ...messageData };
+        await saveData(messages);
+  
+        const content = await this.findById(id);
+        resolve(content);
+      });
+    } catch (error) {
+      console.error('Error while editing message:', error);
+      throw new Error('Failed to edit message.');
     }
   }
 }

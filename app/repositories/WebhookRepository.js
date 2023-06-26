@@ -6,10 +6,10 @@ class WebhookRepository {
     try {
       return new Promise(async resolve => {
         const id = webhooks[webhooks.length - 1].id + 1;
-        const content = { id, ...webhookData };
-        const size = 1;
+        const content = [{ id, ...webhookData }];
+        const size = content.length;
 
-        const updatedWebhooks = [...webhooks, content];
+        const updatedWebhooks = [...webhooks, ...content];
         await saveData(updatedWebhooks);
     
         resolve({ size, content });

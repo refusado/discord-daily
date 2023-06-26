@@ -1,4 +1,3 @@
-import MessageRepository from './repositories/MessageRepository.js';
 import DeleteWebhook from './services/DeleteWebhook.js';
 import CreateWebhook from './services/CreateWebhook.js';
 import ReadWebhook from './services/ReadWebhook.js';
@@ -6,18 +5,16 @@ import ReadMessage from './services/ReadMessages.js';
 
 const webhook = 'https://discord.com/api/webhooks/11111111111111111/oooooooooooooo-ooooooooooooooooooooooooo-ooooooooooooooooooooooooooo';
 
-// saveWebhook(webhook)
-//   .then(console.log)
-//   .catch(console.log);
-
-// removeWebhook(3)
-//   .then(console.log)
-//   .catch(console.log)
-
-// getWebhook({ url: "https://example.com" })
+// getWebhook()
   // .then(console.log)
   // .catch(console.log)
 
+// getMessage(2)
+  // .then(console.log)
+  // .catch(console.log)
+
+// saveWebhook(webhook)
+  // .then(console.log);
 
 async function saveWebhook(webhook) {
   const register = new CreateWebhook();
@@ -37,8 +34,13 @@ async function getWebhook(webhook) {
   return webhooks;
 }
 
-async function getMessages(message) {
+async function getMessage(message) {
   const read = new ReadMessage();
   const messages = await read.execute(message);
   return messages;
 }
+
+import MessageRepository from './repositories/MessageRepository.js';
+console.log(await MessageRepository.edit(30, {
+  "test": "CARALHOOOOO"
+}));

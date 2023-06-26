@@ -1,4 +1,4 @@
-import MessageRepository from "../repositories/MessageRepository";
+import MessageRepository from '../repositories/MessageRepository.js';
 
 export default class ReadMessage {
   async execute(content) {
