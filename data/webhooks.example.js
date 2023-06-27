@@ -14,17 +14,5 @@ export const webhooks = [
   {
     "id": 6,
     "url": "https://discord.com/api/webhooks/11111111111111111/oooooooooooooo-ooooooooooooooooooooooooo-ooooooooooooooooooooooooooo"
-  },
-  {
-    "id": 7,
-    "url": "https://discord.com/api/webhooks/11111111111111111/oooooooooooooo-ooooooooooooooooooooooooo-ooooooooooooooooooooooooooo"
-  },
-  {
-    "id": 8,
-    "url": "https://discord.com/api/webhooks/11111111111111111/oooooooooooooo-ooooooooooooooooooooooooo-ooooooooooooooooooooooooooo"
-  },
-  {
-    "id": 9,
-    "url": "https://discord.com/api/webhooks/11111111111111111/oooooooooooooo-ooooooooooooooooooooooooo-ooooooooooooooooooooooooooo"
   }
 ];
