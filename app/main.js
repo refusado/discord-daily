@@ -14,8 +14,8 @@ const webhook = 'https://discord.com/api/webhooks/11111111111111111/oooooooooooo
   // .then(console.log)
   // .catch(console.log)
 
-// saveWebhook(webhook)
-  // .then(console.log);
+saveWebhook(webhook)
+  .then(console.log);
 
 // editMessage(1, { sent: true })
 //   .then(console.log)

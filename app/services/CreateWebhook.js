@@ -14,7 +14,7 @@ export default class CreateWebhook {
 
     if (!isWebhookValid(url))
       throw new Error('Invalid webhook URL.');
-
+      
     return await WebhookRepository.insert({ url });
   }
 }

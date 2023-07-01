@@ -1,5 +1,5 @@
 import { writeFile } from 'fs';
-import { webhooks } from '../../data/webhooks.example.js';
+import webhooks from '../../data/webhooks.json' assert { type: "json" };
 
 class WebhookRepository {
   async insert(webhookData) {
@@ -85,19 +85,28 @@ class WebhookRepository {
 }
 
 async function saveData(webhooksArray) {
-  const filePath = 'data/webhooks.example.js';
-  
-  const webhooksString = JSON.stringify(webhooksArray, null, 2);
-  const fileContent = `export const webhooks = ${webhooksString};`;
+  const filePath = 'data/webhooks.json';
+  const fileWebhooks = JSON.stringify(webhooksArray, null, 2);
+  const fileContent = fileWebhooks;
+
+  const envFilePath = 'data/example.env';
+  const envFileWebhooks = JSON.stringify(webhooksArray);
+  const envFileContent = `WEBHOOK_URLS=${envFileWebhooks}`;
 
   return new Promise((resolve, reject) => {
+    // update data file
     writeFile(filePath, fileContent, 'utf8', (error) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(`Webhooks data updated. Directory: ${filePath}`);
-      }
+      if (error) return reject(error);
+      console.log(`Webhooks data updated. Directory: ${filePath}`);
     });
+
+    // update environment file
+    writeFile(envFilePath, envFileContent, 'utf8', (error) => {
+      if (error) return reject(error);
+      console.log(`Environment variabels updated for webhooks.`);
+    });
+
+    resolve(`Webhooks data and environment updated.`);
   });
 }
 
