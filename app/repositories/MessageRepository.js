@@ -1,5 +1,5 @@
 import { writeFile } from 'fs';
-import { messages } from '../../data/messages.js';
+import messages from '../../data/messages.json' assert { type: 'json' }
 
 class MessageRepository {
   async insert(messageData) {
@@ -101,10 +101,8 @@ class MessageRepository {
 }
 
 async function saveData(messagesArray) {
-  const filePath = 'data/messages.js';
-  
-  const messagesString = JSON.stringify(messagesArray, null, 2);
-  const fileContent = `export const messages = ${messagesString};`;
+  const filePath = 'data/messages.json';
+  const fileContent = JSON.stringify(messagesArray, null, 2);
 
   return new Promise((resolve, reject) => {
     writeFile(filePath, fileContent, 'utf8', (error) => {
