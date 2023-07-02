@@ -1,51 +1,71 @@
-import DeleteWebhook from './services/DeleteWebhook.js';
-import CreateWebhook from './services/CreateWebhook.js';
+import axios from 'axios';
 import ReadWebhook from './services/ReadWebhook.js';
 import ReadMessage from './services/ReadMessages.js';
 import UpdateMessage from './services/UpdateMessage.js';
 
-const webhook = 'https://discord.com/api/webhooks/11111111111111111/oooooooooooooo-ooooooooooooooooooooooooo-ooooooooooooooooooooooooooo';
+await main();
 
-// getWebhook()
-  // .then(console.log)
-  // .catch(console.log)
-
-// getMessage(2)
-  // .then(console.log)
-  // .catch(console.log)
-
-saveWebhook(webhook)
-  .then(console.log);
-
-// editMessage(1, { sent: true })
-//   .then(console.log)
-//   .catch(console.log)
-
-async function saveWebhook(webhook) {
-  const register = new CreateWebhook();
-  const savedWebhook = await register.execute(webhook);
-  return savedWebhook;
+async function main() {
+  try {
+    const webhooks = await getWebhook();
+    const message = await getRandomMessage();
+    
+    const requestBody = {
+      "embeds": [
+        {
+          "title": `:bulb: Daily tip time!` ,
+          "description": message.text,
+          "color": 16436796
+        }
+      ]
+    }
+    
+    webhooks.forEach(webhook => sendWebhookRequest(webhook, requestBody));
+    
+    const editedMessage = await editMessage(message.id, { sent: true });
+    console.log(`Message sent! ID: ${editedMessage.content[0].id}`);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
-async function removeWebhook(webhook) {
-  const remove = new DeleteWebhook();
-  const removedWebhook = await remove.execute(webhook);
-  return removedWebhook;
+async function sendWebhookRequest(webhook, body) {
+  try {
+    await axios.post(webhook.url, body);
+  } catch (error) {
+    console.log(error.message);
+    console.log(`[ERROR]: Webhook ID '${webhook.id}'`);
+  }
 }
 
-async function getWebhook(webhook) {
+async function getWebhook(webhook, all = false) {
   const read = new ReadWebhook();
   const webhooks = await read.execute(webhook);
-  return webhooks;
+
+  if (all) return webhooks;
+  return webhooks.content;
 }
 
-async function getMessage(message) {
+async function getMessage(message, all = false) {
   const read = new ReadMessage();
   const messages = await read.execute(message);
-  return messages;
+
+  if (all) return messages;
+  return messages.content[0];
 }
+
 async function editMessage(id, newContent, keepOld) {
   const update = new UpdateMessage();
   const editedMessage = await update.execute(id, newContent, keepOld);
   return editedMessage;
+}
+
+async function getRandomMessage() {
+  const allMessages = await getMessage(null, true);
+
+  const min = 0;
+  const max = allMessages.size - 1;
+  const randomId = Math.floor(Math.random() * (max - min + 1) + min);
+
+  return allMessages.content[randomId];
 }

@@ -2,7 +2,7 @@
   {
     "id": 1,
     "text": "Write modular and reusable code by following the SOLID principles, such as the Single Responsibility Principle and Dependency Inversion Principle.",
-    "sent": true
+    "sent": false
   },
   {
     "id": 2,
