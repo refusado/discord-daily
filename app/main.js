@@ -22,8 +22,10 @@ async function main() {
     
     webhooks.forEach(webhook => sendWebhookRequest(webhook, requestBody));
     
-    const editedMessage = await editMessage(message.id, { sent: true });
-    console.log(`Message sent! ID: ${editedMessage.content[0].id}`);
+    await editMessage(message.id, { sent: true });
+    
+    console.log(`Message sent! ID: ${message.id}`);
+    console.log(`Triggered webhooks: ${webhooks.length}`);
   } catch (error) {
     console.log(error);
   }
@@ -61,11 +63,23 @@ async function editMessage(id, newContent, keepOld) {
 }
 
 async function getRandomMessage() {
-  const allMessages = await getMessage(null, true);
+  const messages = await getMessage(null, true);
+
+  const allMessages = messages.content;
+  const unsentMessages = allMessages.filter(msg => !msg.sent);
+  const unsentSize = unsentMessages.length;
+
+  console.log('-- MESSAGES STATUS --');
+  console.log(`  All: ${messages.size}`);
+  console.log(`  Sent: ${messages.size - unsentSize}`);
+  console.log(`  Unsent: ${unsentSize}`);
+  console.log('---------------------');
+
+  if (unsentSize <= 0) throw new Error('There are no unsent messages.');
 
   const min = 0;
-  const max = allMessages.size - 1;
-  const randomId = Math.floor(Math.random() * (max - min + 1) + min);
+  const max = unsentSize - 1;
+  const randomPos = Math.floor(Math.random() * (max - min + 1) + min);
 
-  return allMessages.content[randomId];
+  return unsentMessages[randomPos];
 }
