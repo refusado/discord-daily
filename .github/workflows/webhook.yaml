@@ -16,4 +16,4 @@ jobs:
       - name: Send webhooks
         env:
           WEBHOOK_URLS: ${{ secrets.WEBHOOK_URLS }}
-        run: npm run sendhook
+        run: npm run start

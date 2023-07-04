@@ -4,7 +4,6 @@
   "description": "Get daily tips on your discord server",
   "main": "main.js",
   "scripts": {
-    "sendhook": "node src/main.js",
     "start": "set NODE_ENV=production&& node app/main",
     "start-dev": "set NODE_ENV=development&& node app/main"
   },
