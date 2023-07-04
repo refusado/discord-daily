@@ -1,8 +1,7 @@
 import { writeFile } from 'fs';
 import { config } from 'dotenv';
 
-config({ path: 'data/development.env' });
-const webhooks = JSON.parse(process.env.WEBHOOK_URLS);
+const webhooks = getData();
 
 class WebhookRepository {
   async insert(webhookData) {
@@ -101,6 +100,18 @@ async function saveData(webhooksArray) {
       }
     });
   });
+}
+
+function getData() {
+  if (process.env.NODE_ENV == 'production')
+    config({ path: '.env' });
+  if (process.env.NODE_ENV == 'development')
+    config({ path: 'development.env' });
+
+  const webhooks = process.env.WEBHOOK_URLS;
+  if (!webhooks) return [];
+
+  return JSON.parse(webhooks);
 }
 
 export default new WebhookRepository();
